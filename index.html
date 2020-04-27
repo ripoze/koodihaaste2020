@@ -3,28 +3,37 @@
 <head>
     <title>Solidabis koodihaaste 2020</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css">
 </head>
 
 <body>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css">
-    <div class="container">
-        <form>
-            <fieldset>
-                <label for="mista">Mistä</label>
-                <select id="mista" onchange="updateRoute()">
-                </select>
+    <div class="row site">
+        <div class="sm-12 md-10 lg-8 row flex-middle ">
+            <div class="paper">
+                <h2>Koodihaaste 2020</h2>
+                <form>
+                    <div class="row border border-5 border-primary shadow">
 
-                <label for="mihin">Mihin</label>
-                <select id="mihin" onchange="updateRoute()">
-                </select>
-            </fieldset>
-        </form>
-        <table id="reittiTable">
+                        <div class="sm-6 col">
+                            <label for="mista">Mistä</label>
+                            <select id="mista" onchange="updateRoute()">
+                            </select>
+                        </div>
+                        <div class="sm-6 col">
+                            <label for="mihin">Mihin</label>
+                            <select id="mihin" onchange="updateRoute()">
+                            </select>
+                        </div>
 
-            <tbody>
-            </tbody>
-        </table>
-        <img src="kartta.jpg">
+                    </div>
+                </form>
+                <div class="row border border-5 border-primary shadow">
+                    <table id="reittiTable">
+                    </table>
+                </div>
+                <img src="kartta.jpg" class="shadow">
+            </div>
+        </div>
     </div>
 </body>
 

@@ -18,7 +18,8 @@ async function init() {
             data.linjat.push({ mista: pysakit[i + 1], mihin: pysakit[i], kesto: kesto, linja: nimi })
         }
     }
-    fillSelectBoxes()
+    fillSelectBoxes();
+    updateRoute();
 }
 
 function bellmanFord(pysakit, tiet, mista, mihin) {
@@ -131,7 +132,12 @@ function updateRoute() {
     reitti.forEach(item => {
         let row = table.insertRow();
         let newCell = row.insertCell();
-        newCell.innerHTML = item.linja;
+        let color = "text-primary"
+        if (item.linja == 'vihreä') { color = "background-success" }
+        if (item.linja == 'keltainen') { color = "background-warning" }
+        if (item.linja == 'punainen') { color = "background-danger" }
+        if (item.linja == 'sininen') { color = "background-secondary" }
+        newCell.innerHTML = '<span class="' + color + '">' + item.linja + '</span>';
 
         newCell = row.insertCell();
         newCell.innerHTML = item.mista;
