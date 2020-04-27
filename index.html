@@ -1,8 +1,8 @@
-<script src='index.js'></script>
 <html>
 
 <head>
-    <title>Solibabis koodihaaste 2020</title>
+    <title>Solidabis koodihaaste 2020</title>
+    <meta charset="UTF-8">
 </head>
 
 <body>
@@ -11,15 +11,12 @@
         <form>
             <fieldset>
                 <label for="mista">Mistä</label>
-                <select id="mista">
+                <select id="mista" onchange="updateRoute()">
                 </select>
 
                 <label for="mihin">Mihin</label>
-                <select id="mihin">
+                <select id="mihin" onchange="updateRoute()">
                 </select>
-
-
-                <input class="button-primary" type="button" value="Hae" onClick="updateRoute()">
             </fieldset>
         </form>
         <table id="reittiTable">
@@ -27,66 +24,9 @@
             <tbody>
             </tbody>
         </table>
+        <img src="kartta.jpg">
     </div>
 </body>
 
 </html>
-
-<script>
-    //Täytetään selectit datan pysäkeillä
-    let selectBox = document.getElementById('mihin');
-    getStops().forEach(stop => {
-        let opt = document.createElement('option');
-        opt.appendChild(document.createTextNode(stop));
-        opt.value = stop;
-        selectBox.appendChild(opt);
-    })
-
-    selectBox = document.getElementById('mista');
-    getStops().forEach(stop => {
-        let opt = document.createElement('option');
-        opt.appendChild(document.createTextNode(stop));
-        opt.value = stop;
-        selectBox.appendChild(opt);
-    })
-
-    function updateRoute() {
-        const mista = document.getElementById('mista').value;
-        const mihin = document.getElementById('mihin').value;
-        const reitti = getRoute(mista, mihin);
-
-        const table = document.getElementById("reittiTable");
-        table.innerHTML = "";
-
-        //Luodaan header uusiksi
-        let header = table.createTHead();
-        let row = header.insertRow();
-        let cell = row.insertCell();
-        cell.innerHTML = "<b>Linja</b>";
-        cell = row.insertCell();
-        cell.innerHTML = "<b>Mistä</b>";
-        cell = row.insertCell();
-        cell.innerHTML = "<b>Mihin</b>";
-        cell = row.insertCell();
-        cell.innerHTML = "<b>Kesto</b>";
-
-        reitti.forEach(item => {
-            let row = table.insertRow();
-            let newCell = row.insertCell();
-            newCell.innerHTML = item.linja;
-
-            newCell = row.insertCell();
-            newCell.innerHTML = item.mista;
-            newCell = row.insertCell();
-            newCell.innerHTML = item.mihin;
-            newCell = row.insertCell();
-            newCell.innerHTML = item.kesto;
-        })
-        row = table.insertRow();
-        cell = row.insertCell();
-        cell = row.insertCell();
-        cell = row.insertCell();
-        cell = row.insertCell();
-        cell.innerHTML = `<b>${reitti.reduce((sum, item)=>sum+item.kesto, 0)}</b>`;
-    }
-</script>
+<script src='index.js'></script>

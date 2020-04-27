@@ -1,171 +1,10 @@
-let data = {
-    "pysakit": [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R"
-    ],
-    "tiet": [
-        {
-            "mista": "A",
-            "mihin": "B",
-            "kesto": 3
-        },
-        {
-            "mista": "B",
-            "mihin": "D",
-            "kesto": 2
-        },
-        {
-            "mista": "D",
-            "mihin": "A",
-            "kesto": 1
-        },
-        {
-            "mista": "A",
-            "mihin": "C",
-            "kesto": 1
-        },
-        {
-            "mista": "C",
-            "mihin": "D",
-            "kesto": 5
-        },
-        {
-            "mista": "C",
-            "mihin": "E",
-            "kesto": 2
-        },
-        {
-            "mista": "E",
-            "mihin": "D",
-            "kesto": 3
-        },
-        {
-            "mista": "E",
-            "mihin": "F",
-            "kesto": 1
-        },
-        {
-            "mista": "F",
-            "mihin": "G",
-            "kesto": 1
-        },
-        {
-            "mista": "G",
-            "mihin": "H",
-            "kesto": 2
-        },
-        {
-            "mista": "H",
-            "mihin": "I",
-            "kesto": 2
-        },
-        {
-            "mista": "I",
-            "mihin": "J",
-            "kesto": 1
-        },
-        {
-            "mista": "I",
-            "mihin": "G",
-            "kesto": 1
-        },
-        {
-            "mista": "G",
-            "mihin": "K",
-            "kesto": 8
-        },
-        {
-            "mista": "K",
-            "mihin": "L",
-            "kesto": 1
-        },
-        {
-            "mista": "L",
-            "mihin": "M",
-            "kesto": 1
-        },
-        {
-            "mista": "E",
-            "mihin": "M",
-            "kesto": 10
-        },
-        {
-            "mista": "M",
-            "mihin": "N",
-            "kesto": 2
-        },
-        {
-            "mista": "N",
-            "mihin": "O",
-            "kesto": 2
-        },
-        {
-            "mista": "O",
-            "mihin": "P",
-            "kesto": 2
-        },
-        {
-            "mista": "O",
-            "mihin": "Q",
-            "kesto": 1
-        },
-        {
-            "mista": "P",
-            "mihin": "Q",
-            "kesto": 2
-        },
-        {
-            "mista": "N",
-            "mihin": "Q",
-            "kesto": 1
-        },
-        {
-            "mista": "Q",
-            "mihin": "R",
-            "kesto": 5
-        },
-        {
-            "mista": "R",
-            "mihin": "N",
-            "kesto": 3
-        },
-        {
-            "mista": "D",
-            "mihin": "R",
-            "kesto": 6
-        }
-    ],
-    "linjastot": {
-        "keltainen": ["E", "F", "G", "K", "L", "M", "N"],
-        "punainen": ["C", "D", "R", "Q", "N", "O", "P"],
-        "vihreä": ["D", "B", "A", "C", "E", "F", "G", "H", "I", "J"],
-        "sininen": ["D", "E", "M", "N", "O"]
-    }
-}
-
 init();
 
+let data;
 
-
-
-
-function init() {
+async function init() {
+    data = await fetch('reittiopas.json');
+    data = await data.json();
     //Luodaan data missä pysäkkivälit, linjat ja kestot
     data.linjat = []
     for (const [nimi, pysakit] of Object.entries(data.linjastot)) {
@@ -174,10 +13,12 @@ function init() {
                 (tie.mista == pysakit[i] && tie.mihin == pysakit[i + 1]) ||
                 (tie.mista == pysakit[i + 1] && tie.mihin == pysakit[i])
             )[0].kesto
+            //Lisätään mistä->mihin kumpaankin suuntaan
             data.linjat.push({ mista: pysakit[i], mihin: pysakit[i + 1], kesto: kesto, linja: nimi })
             data.linjat.push({ mista: pysakit[i + 1], mihin: pysakit[i], kesto: kesto, linja: nimi })
         }
     }
+    fillSelectBoxes()
 }
 
 function bellmanFord(pysakit, tiet, mista, mihin) {
@@ -212,8 +53,10 @@ function bellmanFord(pysakit, tiet, mista, mihin) {
 
 
 function getRoute(mista, mihin) {
+    console.log(mista, mihin);
     let result = []
     const route = bellmanFord(data.pysakit, data.linjat, mista, mihin);
+    console.log(route);
     for (let i = 0; i < route.length - 1; i++) {
         let linja = []
         if (i > 0) {
@@ -223,15 +66,13 @@ function getRoute(mista, mihin) {
         if (linja.length == 0) linja = data.linjat.filter(tie => tie.mista == route[i] && tie.mihin == route[i + 1])
         result.push({ linja: linja[0].linja, mista: linja[0].mista, mihin: linja[0].mihin, kesto: linja[0].kesto })
     }
-    result = yhdista(result)
+    result = yhdista(result);
     return result
 }
 
-function getStops() {
-    return data.pysakit
-}
 
 function yhdista(data) {
+    //Yhdistää peräkkäiset samalla linjalla tapahtuvat pysäkkivälit ja summaa kestot
     let result = [];
     while (data[0]) {
         if (data[1] && data[0].linja == data[1].linja) {
@@ -246,3 +87,63 @@ function yhdista(data) {
     return result
 }
 
+function fillSelectBoxes() {
+    //Täytetään selectit datan pysäkeillä
+    let selectBox = document.getElementById('mihin');
+    data.pysakit.forEach(stop => {
+        let opt = document.createElement('option');
+        opt.appendChild(document.createTextNode(stop));
+        opt.value = stop;
+        selectBox.appendChild(opt);
+    })
+
+    selectBox = document.getElementById('mista');
+    data.pysakit.forEach(stop => {
+        let opt = document.createElement('option');
+        opt.appendChild(document.createTextNode(stop));
+        opt.value = stop;
+        selectBox.appendChild(opt);
+    })
+}
+
+
+function updateRoute() {
+    //Piirtää reittitaulukon käyttöliittymään
+    const mista = document.getElementById('mista').value;
+    const mihin = document.getElementById('mihin').value;
+    const reitti = getRoute(mista, mihin);
+
+    const table = document.getElementById("reittiTable");
+    table.innerHTML = "";
+
+    //Luodaan header uusiksi
+    let header = table.createTHead();
+    let row = header.insertRow();
+    let cell = row.insertCell();
+    cell.innerHTML = "<b>Linja</b>";
+    cell = row.insertCell();
+    cell.innerHTML = "<b>Mistä</b>";
+    cell = row.insertCell();
+    cell.innerHTML = "<b>Mihin</b>";
+    cell = row.insertCell();
+    cell.innerHTML = "<b>Kesto</b>";
+
+    reitti.forEach(item => {
+        let row = table.insertRow();
+        let newCell = row.insertCell();
+        newCell.innerHTML = item.linja;
+
+        newCell = row.insertCell();
+        newCell.innerHTML = item.mista;
+        newCell = row.insertCell();
+        newCell.innerHTML = item.mihin;
+        newCell = row.insertCell();
+        newCell.innerHTML = item.kesto;
+    })
+    row = table.insertRow();
+    cell = row.insertCell();
+    cell = row.insertCell();
+    cell = row.insertCell();
+    cell = row.insertCell();
+    cell.innerHTML = `<b>${reitti.reduce((sum, item) => sum + item.kesto, 0)}</b>`;
+}
