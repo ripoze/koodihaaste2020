@@ -18,8 +18,8 @@ async function init() {
             data.linjat.push({ mista: pysakit[i + 1], mihin: pysakit[i], kesto: kesto, linja: nimi })
         }
     }
-    fillSelectBoxes();
-    updateRoute();
+    fillSelectBoxes(document.getElementById('mista'), document.getElementById('mihin'));
+    updateRoute(data, document.getElementById('mista').value, document.getElementById('mihin').value);
 }
 
 function bellmanFord(pysakit, tiet, mista, mihin) {
@@ -53,11 +53,9 @@ function bellmanFord(pysakit, tiet, mista, mihin) {
 }
 
 
-function getRoute(mista, mihin) {
-    console.log(mista, mihin);
+function getRoute(data, mista, mihin) {
     let result = []
     const route = bellmanFord(data.pysakit, data.linjat, mista, mihin);
-    console.log(route);
     for (let i = 0; i < route.length - 1; i++) {
         let linja = []
         if (i > 0) {
@@ -88,9 +86,9 @@ function yhdista(data) {
     return result
 }
 
-function fillSelectBoxes() {
+function fillSelectBoxes(mista, mihin) {
     //Täytetään selectit datan pysäkeillä
-    let selectBox = document.getElementById('mihin');
+    let selectBox = mihin;
     data.pysakit.forEach(stop => {
         let opt = document.createElement('option');
         opt.appendChild(document.createTextNode(stop));
@@ -98,7 +96,7 @@ function fillSelectBoxes() {
         selectBox.appendChild(opt);
     })
 
-    selectBox = document.getElementById('mista');
+    selectBox = mista;
     data.pysakit.forEach(stop => {
         let opt = document.createElement('option');
         opt.appendChild(document.createTextNode(stop));
@@ -108,11 +106,9 @@ function fillSelectBoxes() {
 }
 
 
-function updateRoute() {
+function updateRoute(data, mista, mihin) {
     //Piirtää reittitaulukon käyttöliittymään
-    const mista = document.getElementById('mista').value;
-    const mihin = document.getElementById('mihin').value;
-    const reitti = getRoute(mista, mihin);
+    const reitti = getRoute(data, mista, mihin);
 
     const table = document.getElementById("reittiTable");
     table.innerHTML = "";
@@ -144,12 +140,12 @@ function updateRoute() {
         newCell = row.insertCell();
         newCell.innerHTML = item.mihin;
         newCell = row.insertCell();
-        newCell.innerHTML = item.kesto;
+        newCell.innerHTML = item.kesto + " min";
     })
     row = table.insertRow();
     cell = row.insertCell();
     cell = row.insertCell();
     cell = row.insertCell();
     cell = row.insertCell();
-    cell.innerHTML = `<b>${reitti.reduce((sum, item) => sum + item.kesto, 0)}</b>`;
+    cell.innerHTML = `<b>${reitti.reduce((sum, item) => sum + item.kesto, 0)} min</b>`;
 }

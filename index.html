@@ -16,12 +16,12 @@
 
                         <div class="sm-6 col">
                             <label for="mista">Mistä</label>
-                            <select id="mista" onchange="updateRoute()">
+                            <select id="mista" onchange="updateRoute(data, document.getElementById('mista').value, document.getElementById('mihin').value)">
                             </select>
                         </div>
                         <div class="sm-6 col">
                             <label for="mihin">Mihin</label>
-                            <select id="mihin" onchange="updateRoute()">
+                            <select id="mihin" onchange="updateRoute(data, document.getElementById('mista').value, document.getElementById('mihin').value)">
                             </select>
                         </div>
 
