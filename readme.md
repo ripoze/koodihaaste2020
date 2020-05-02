@@ -9,4 +9,3 @@ https://koodihaaste.solidabis.com/
 # Käyttöohje
 * Sijoita webserverille
 
-https://paksupapu.tk/koodihaaste/
